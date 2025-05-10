@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 	"taskEffectiveMobile/internal/app/models"
@@ -26,7 +25,6 @@ func (h *Handler) HandleGetPeople(w http.ResponseWriter, r *http.Request) error 
 	utils.Logger.Info("GetPeople: запрос на получение списка людей")
 
 	query := r.URL.Query()
-
 	filter := models.PeopleFilter{}
 
 	if gender := query.Get("gender"); gender != "" {
@@ -46,22 +44,24 @@ func (h *Handler) HandleGetPeople(w http.ResponseWriter, r *http.Request) error 
 
 	if pageStr := query.Get("page"); pageStr != "" {
 		page, err := strconv.Atoi(pageStr)
+
 		if err == nil && page > 0 {
 			filter.Page = page
 		}
+
 	} else {
 		filter.Page = 1
 	}
 
 	if limitStr := query.Get("limit"); limitStr != "" {
 		limit, err := strconv.Atoi(limitStr)
+
 		if err == nil && limit > 0 {
 			filter.Limit = limit
 		}
 	} else {
 		filter.Limit = 10
 	}
-	fmt.Println(filter)
 
 	utils.Logger.Debugf("применяемые фильтры: %+v", filter)
 
@@ -70,6 +70,7 @@ func (h *Handler) HandleGetPeople(w http.ResponseWriter, r *http.Request) error 
 		utils.Logger.Errorf(" ошибка при получении списка: %v", err)
 		return err
 	}
+
 	utils.Logger.Info("GetPeople: получено %d записей", len(people))
 	return utils.WriteSuccessfulJSON(w, people)
 }

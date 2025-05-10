@@ -26,6 +26,7 @@ func (h *Handler) HandleDeletePerson(w http.ResponseWriter, r *http.Request) err
 	if err != nil {
 		return utils.BadRequest("invalid UUID")
 	}
+
 	utils.Logger.Debugf("Удаление человека с id: %s", id)
 
 	err = h.DI.PersonUseCase.Delete(r.Context(), id)
@@ -34,7 +35,10 @@ func (h *Handler) HandleDeletePerson(w http.ResponseWriter, r *http.Request) err
 
 		return utils.NotFound("person not found")
 	}
+
 	utils.Logger.Infof("Пользователь удален: %s ", id)
+
 	w.WriteHeader(http.StatusNoContent)
+
 	return nil
 }

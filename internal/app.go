@@ -27,6 +27,7 @@ func Run() {
 	if err := godotenv.Load(); err != nil {
 		log.Fatal("Error loading .env file")
 	}
+
 	dbPool, err := db.PgConnection()
 	if err != nil {
 		log.Fatal(err)
@@ -44,8 +45,10 @@ func Run() {
 		Addr:    ":" + os.Getenv("PORT"),
 		Handler: r,
 	}
+
 	go func() {
 		log.Println("Сервер запущен на порту", os.Getenv("PORT"))
+
 		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("Ошибка запуска сервера: %s\n", err)
 		}

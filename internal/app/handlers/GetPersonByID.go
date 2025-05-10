@@ -22,14 +22,18 @@ func (h *Handler) HandleGetPersonByID(w http.ResponseWriter, r *http.Request) er
 	utils.Logger.Info("GetPersonByID: запрос на получение по ID")
 
 	idStr := chi.URLParam(r, "id")
+
 	id, err := uuid.Parse(idStr)
+
 	if err != nil {
 		return utils.BadRequest("invalid UUID")
 	}
+
 	person, err := h.DI.PersonUseCase.GetByID(r.Context(), id)
 	if err != nil {
 		return utils.NotFound("person not found")
 	}
+
 	utils.Logger.Debugf("GetPersonByID: полученные данные: %+v", person)
 	return utils.WriteSuccessfulJSON(w, person)
 }

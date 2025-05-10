@@ -27,6 +27,7 @@ func NewRepository(db *pgxpool.Pool) Repository {
 func (r *repository) CreatePerson(ctx context.Context, person *models.Person) error {
 	query := `INSERT INTO people (id, full_name, age, gender, nationality, created_at, updated_at)
 			  VALUES ($1, $2, $3, $4, $5, $6, $7)`
+
 	_, err := r.db.Exec(ctx, query,
 		person.ID,
 		person.FullName,
@@ -35,18 +36,23 @@ func (r *repository) CreatePerson(ctx context.Context, person *models.Person) er
 		person.Nationality,
 		person.CreatedAt,
 		person.UpdatedAt)
+
 	return err
 }
 
 func (r *repository) GetPersonByID(ctx context.Context, id uuid.UUID) (*models.Person, error) {
 	var person models.Person
+
 	row := r.db.QueryRow(ctx, `SELECT id, full_name, age, gender, nationality, created_at, updated_at FROM people WHERE id = $1`, id)
+
 	err := row.Scan(&person.ID, &person.FullName, &person.Age, &person.Gender, &person.Nationality, &person.CreatedAt, &person.UpdatedAt)
+
 	return &person, err
 }
 
 func (r *repository) UpdatePerson(ctx context.Context, person *models.Person) error {
 	_, err := r.db.Exec(ctx, `UPDATE people SET full_name = $1, age = $2, gender = $3, nationality=$4 WHERE id = $5`, person.FullName, person.Age, person.Gender, person.Nationality, person.ID)
+
 	return err
 }
 
@@ -99,6 +105,7 @@ func (r *repository) GetPeople(ctx context.Context, filter models.PeopleFilter) 
 	var people []models.Person
 	for rows.Next() {
 		var p models.Person
+
 		err := rows.Scan(
 			&p.ID,
 			&p.FullName,
@@ -108,10 +115,13 @@ func (r *repository) GetPeople(ctx context.Context, filter models.PeopleFilter) 
 			&p.CreatedAt,
 			&p.UpdatedAt,
 		)
+
 		if err != nil {
 			return nil, err
 		}
+
 		people = append(people, p)
 	}
+
 	return people, nil
 }

@@ -38,6 +38,7 @@ func (e *enricher) Enrich(ctx context.Context, FullName string) (*int, *string, 
 
 	if resp, err := http.Get("https://api.agify.io/?name=" + encoded); err == nil {
 		defer resp.Body.Close()
+
 		var result ageResp
 		if err := json.NewDecoder(resp.Body).Decode(&result); err == nil {
 			age = &result.Age
@@ -46,6 +47,7 @@ func (e *enricher) Enrich(ctx context.Context, FullName string) (*int, *string, 
 
 	if resp, err := http.Get("https://api.genderize.io/?name=" + encoded); err == nil {
 		defer resp.Body.Close()
+
 		var result genderResp
 		if err := json.NewDecoder(resp.Body).Decode(&result); err == nil {
 			gender = &result.Gender
@@ -54,6 +56,7 @@ func (e *enricher) Enrich(ctx context.Context, FullName string) (*int, *string, 
 
 	if resp, err := http.Get("https://api.nationalize.io/?name=" + encoded); err == nil {
 		defer resp.Body.Close()
+
 		var result nationalityResp
 		if err := json.NewDecoder(resp.Body).Decode(&result); err == nil && len(result.Country) > 0 {
 			nationality = &result.Country[0].CountryID

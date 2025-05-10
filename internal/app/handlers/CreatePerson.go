@@ -24,10 +24,12 @@ func (h *Handler) HandleCreatePerson(w http.ResponseWriter, r *http.Request) err
 	utils.Logger.Info("CreatePerson: запрос на создание человека получен")
 
 	req := CreatePersonRequest{}
+
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		utils.Logger.Warnf("Ошибка декодирования тела запроса: %v", err)
 		return utils.BadRequest("invalid JSON")
 	}
+
 	if req.FullName == "" {
 		return utils.BadRequest("full name is required")
 	}
@@ -39,7 +41,10 @@ func (h *Handler) HandleCreatePerson(w http.ResponseWriter, r *http.Request) err
 		utils.Logger.Errorf("Ошибка при добавлении пользователя: %v", err)
 		return err
 	}
+
 	utils.Logger.Infof("Пользователь добавлен: %s %s", req.FullName)
+
 	w.WriteHeader(http.StatusCreated)
+
 	return nil
 }

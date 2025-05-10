@@ -27,14 +27,17 @@ func (h *Handler) HandleUpdatePerson(w http.ResponseWriter, r *http.Request) err
 
 	idStr := chi.URLParam(r, "id")
 	id, err := uuid.Parse(idStr)
+
 	if err != nil {
 		return utils.BadRequest("invalid UUID")
 	}
+
 	var person models.Person
 	if err := json.NewDecoder(r.Body).Decode(&person); err != nil {
 		utils.Logger.Warnf("Ошибка декодирования тела запроса: %v", err)
 		return utils.BadRequest("invalid JSON")
 	}
+
 	person.ID = id
 	utils.Logger.Debugf("обновляемые данные: %+v", person)
 
