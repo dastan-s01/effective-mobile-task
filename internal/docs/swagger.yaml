@@ -1,0 +1,199 @@
+basePath: /
+definitions:
+  handlers.CreatePersonRequest:
+    properties:
+      full_name:
+        type: string
+    type: object
+  models.Person:
+    properties:
+      age:
+        type: integer
+      created_at:
+        type: string
+      full_name:
+        type: string
+      gender:
+        type: string
+      id:
+        type: string
+      nationality:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  utils.ErrorResponse:
+    properties:
+      message:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API сервис для работы с пользователями
+  title: Effective Mobile API
+  version: "1.0"
+paths:
+  /person:
+    get:
+      consumes:
+      - application/json
+      description: Получить пользователей с фильтрацией и пагинацией
+      parameters:
+      - description: Пол
+        in: query
+        name: gender
+        type: string
+      - description: Национальность
+        in: query
+        name: nationality
+        type: string
+      - description: Возраст
+        in: query
+        name: age
+        type: integer
+      - description: Страница
+        in: query
+        name: page
+        type: integer
+      - description: Лимит
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Person'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      summary: Получить список пользователей
+      tags:
+      - people
+    post:
+      consumes:
+      - application/json
+      description: Обогащает человека по имени и сохраняет в БД
+      parameters:
+      - description: Данные человека
+        in: body
+        name: person
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.CreatePersonRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Person'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      summary: Добавить человека
+      tags:
+      - people
+  /person/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Удаляет пользователя по ID
+      parameters:
+      - description: ID пользователя
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: no content
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      summary: Удалить пользователя
+      tags:
+      - people
+    get:
+      consumes:
+      - application/json
+      description: Возвращает пользователя по его UUID
+      parameters:
+      - description: ID пользователя
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Person'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      summary: Получить пользователя по ID
+      tags:
+      - people
+    put:
+      consumes:
+      - application/json
+      description: Обновляет поля пользователя по ID
+      parameters:
+      - description: ID пользователя
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Обновлённые данные пользователя
+        in: body
+        name: person
+        required: true
+        schema:
+          $ref: '#/definitions/models.Person'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Person'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      summary: Обновить данные пользователя
+      tags:
+      - people
+swagger: "2.0"
